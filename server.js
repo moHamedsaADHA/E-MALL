@@ -9,6 +9,18 @@ const app = express();
 // Parse JSON request bodies
 app.use(express.json());
 
+// Request logging using Morgan (console + file)
+const fs = require('fs');
+const path = require('path');
+const morgan = require('morgan');
+
+const logsDir = path.join(__dirname, 'logs');
+try { fs.mkdirSync(logsDir, { recursive: true }); } catch (e) {}
+const accessLogStream = fs.createWriteStream(path.join(logsDir, 'requests.log'), { flags: 'a' });
+
+if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
+app.use(morgan('combined', { stream: accessLogStream }));
+
 // Development-only simple logger
 if (process.env.NODE_ENV === 'development') {
   app.use((req, res, next) => {
