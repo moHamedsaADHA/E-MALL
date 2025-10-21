@@ -19,6 +19,18 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal Server Error' });
 });
 
-app.listen(PORT, () => {
-  console.log(`App running on port ${PORT}`);
-});
+const db = require('./config/db');
+
+async function start() {
+  try {
+    await db.connect();
+  } catch (err) {
+    console.warn('DB connection failed:', err.message);
+  }
+
+  app.listen(PORT, () => {
+    console.log(`App running on port ${PORT}`);
+  });
+}
+
+start();
