@@ -23,9 +23,11 @@ const db = require('./config/db');
 
 async function start() {
   try {
-    await db.connect();
+    // Wait for the DB module to initialize itself (no duplicate connect calls)
+    await db.ready;
+    console.log('DB ready (if configured)');
   } catch (err) {
-    console.warn('DB connection failed:', err.message);
+    console.warn('DB initialization failed:', err && err.message ? err.message : err);
   }
 
   app.listen(PORT, () => {

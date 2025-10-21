@@ -4,7 +4,8 @@ const { MONGODB_URI } = require('./env');
 let client;
 let db;
 
-async function connect() {
+// ready is a promise that resolves when the connection is established (or resolves to null if no URI)
+let ready = (async () => {
   if (!MONGODB_URI) {
     console.warn('MONGODB_URI not set — skipping DB connection');
     return null;
@@ -15,7 +16,7 @@ async function connect() {
   db = client.db();
   console.log('Connected to MongoDB');
   return db;
-}
+})();
 
 function getDb() {
   if (!db) throw new Error('Database not connected');
@@ -26,4 +27,4 @@ async function close() {
   if (client) await client.close();
 }
 
-module.exports = { connect, getDb, close };
+module.exports = { ready, getDb, close };
