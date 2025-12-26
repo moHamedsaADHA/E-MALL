@@ -1,0 +1,343 @@
+src
+├── api
+│   └── v1
+│       ├── auth.routes.ts
+│       ├── users.routes.ts
+│       ├── shops.routes.ts
+│       ├── products.routes.ts
+│       ├── categories.routes.ts
+│       ├── cart.routes.ts
+│       ├── orders.routes.ts
+│       ├── payments.routes.ts          # NEW
+│       ├── reviews.routes.ts
+│       ├── jobs.routes.ts
+│       ├── applications.routes.ts
+│       ├── coupons.routes.ts
+│       ├── wishlist.routes.ts
+│       ├── messages.routes.ts
+│       ├── notifications.routes.ts
+│       ├── dashboards.routes.ts
+│       └── webhooks.routes.ts           # NEW (Payments / External)
+│
+├── modules
+│   ├── auth
+│   │   ├── auth.controller.ts
+│   │   ├── auth.service.ts
+│   │   ├── auth.routes.ts
+│   │   ├── auth.validation.ts
+│   │   ├── auth.types.ts
+│   │   └── auth.middleware.ts
+│   │
+│   ├── users
+│   │   ├── user.model.ts
+│   │   ├── user.controller.ts
+│   │   ├── user.service.ts
+│   │   ├── user.validation.ts
+│   │   └── user.types.ts
+│   │
+│   ├── shops
+│   │   ├── shop.model.ts
+│   │   ├── shop.controller.ts
+│   │   ├── shop.service.ts
+│   │   ├── shop.validation.ts
+│   │   └── shop.types.ts
+│   │
+│   ├── categories
+│   │   ├── category.model.ts            # Hierarchical (parentId)
+│   │   ├── category.controller.ts
+│   │   ├── category.service.ts
+│   │   ├── category.validation.ts
+│   │   └── category.types.ts
+│   │
+│   ├── products
+│   │   ├── product.model.ts             # shopId = tenant discriminator
+│   │   ├── product.controller.ts
+│   │   ├── product.service.ts
+│   │   ├── product.validation.ts
+│   │   └── product.types.ts
+│   │
+│   ├── cart
+│   │   ├── cart.model.ts                # Multi-vendor cart
+│   │   ├── cart.controller.ts
+│   │   ├── cart.service.ts
+│   │   └── cart.validation.ts
+│   │
+│   ├── orders
+│   │   ├── order.model.ts               # One order per shop
+│   │   ├── order.controller.ts
+│   │   ├── order.service.ts
+│   │   ├── order.validation.ts
+│   │   └── order.types.ts
+│   │
+│   ├── payments                         # NEW (Separated Responsibility)
+│   │   ├── payment.model.ts
+│   │   ├── payment.controller.ts
+│   │   ├── payment.service.ts
+│   │   ├── payment.webhook.ts
+│   │   └── payment.types.ts
+│   │
+│   ├── reviews
+│   │   ├── review.model.ts              # Polymorphic (Shop/Product)
+│   │   ├── review.controller.ts
+│   │   ├── review.service.ts
+│   │   └── review.validation.ts
+│   │
+│   ├── jobs
+│   │   ├── job.model.ts
+│   │   ├── job.controller.ts
+│   │   ├── job.service.ts
+│   │   ├── job.validation.ts
+│   │   └── job.types.ts
+│   │
+│   ├── applications
+│   │   ├── application.model.ts
+│   │   ├── application.controller.ts
+│   │   ├── application.service.ts
+│   │   └── application.validation.ts
+│   │
+│   ├── coupons
+│   │   ├── coupon.model.ts              # Global or Shop-specific
+│   │   ├── coupon.controller.ts
+│   │   ├── coupon.service.ts
+│   │   └── coupon.validation.ts
+│   │
+│   ├── wishlist
+│   │   ├── wishlist.model.ts
+│   │   ├── wishlist.controller.ts
+│   │   └── wishlist.service.ts
+│   │
+│   ├── messages
+│   │   ├── message.model.ts
+│   │   ├── message.controller.ts
+│   │   └── message.service.ts
+│   │
+│   ├── notifications
+│   │   ├── notification.model.ts
+│   │   ├── notification.controller.ts
+│   │   └── notification.service.ts
+│   │
+│   ├── dashboards
+│   │   ├── admin.dashboard.ts           # Aggregated analytics
+│   │   ├── shop.dashboard.ts
+│   │   └── dashboard.service.ts
+│   │
+│   └── audit-logs                       # NEW (Enterprise-level)
+│       ├── audit.model.ts
+│       └── audit.service.ts
+│
+├── middlewares
+│   ├── auth.middleware.ts
+│   ├── roles.middleware.ts
+│   ├── ownership.middleware.ts          # shopId access control
+│   ├── validate.middleware.ts
+│   ├── error.middleware.ts
+│   ├── upload.middleware.ts
+│   └── rateLimit.middleware.ts
+│
+├── utils
+│   ├── AppError.ts
+│   ├── catchAsync.ts
+│   ├── apiFeatures.ts                   # filter, sort, search, paginate
+│   ├── pagination.ts
+│   ├── logger.ts
+│   └── constants.ts
+│
+├── config
+│   ├── database.ts
+│   ├── env.ts
+│   ├── cors.ts
+│   ├── swagger.ts
+│   └── redis.ts                         # Optional caching
+│
+├── docs
+│   ├── openapi.yaml
+│   └── erd.drawio                       # ERD source
+│
+├── uploads
+│   ├── users
+│   ├── shops
+│   └── products
+│
+├── app.ts
+└── server.ts
+
+
+this sorting:
+1️⃣ Auth + Roles
+2️⃣ Shops (Core of the system)
+3️⃣ Products → Orders → Payments
+4️⃣ Jobs + Applications
+5️⃣ Dashboards
+
+
+🧭 الترتيب الصح للبدء (Execution Order)
+🔴 المرحلة 0 — قبل أي كود (إجباري)
+تبدأ بـ:
+config/
+├── env.ts
+├── database.ts
+
+تعمل إيه؟
+
+توصل MongoDB
+
+تضبط ENV
+
+تتأكد السيرفر بيشتغل
+
+ملفات:
+
+server.ts
+
+app.ts
+
+الهدف:
+GET /health ترجع 200 OK
+
+🟠 المرحلة 1 — Auth (أهم فولدر)
+تبدأ بـ:
+modules/auth
+
+ليه؟
+
+كل حاجة بعدها معتمدة عليه
+
+Roles, JWT, Guards
+
+الترتيب جوه auth:
+
+auth.types.ts
+
+auth.validation.ts
+
+auth.service.ts
+
+auth.controller.ts
+
+auth.routes.ts
+
+auth.middleware.ts
+
+✅ APIs لازم تخلصها هنا
+Method	Endpoint	الهدف
+POST	/api/v1/auth/register	تسجيل
+POST	/api/v1/auth/login	دخول
+POST	/api/v1/auth/verify-email	تفعيل
+POST	/api/v1/auth/refresh-token	Refresh
+POST	/api/v1/auth/enable-2fa	2FA
+POST	/api/v1/auth/verify-2fa	تأكيد
+
+بعد المرحلة دي:
+
+عندك JWT شغال
+
+Roles موجودة
+
+Protect middleware شغال
+
+🟡 المرحلة 2 — Users (أساسي جدًا)
+تبدأ بـ:
+modules/users
+
+الترتيب:
+
+user.model.ts
+
+user.types.ts
+
+user.service.ts
+
+user.controller.ts
+
+user.validation.ts
+
+✅ APIs
+Method	Endpoint	مين
+GET	/api/v1/users/me	أي مستخدم
+PATCH	/api/v1/users/me	أي مستخدم
+GET	/api/v1/users	Admin
+PATCH	/api/v1/users/:id/role	SuperAdmin
+PATCH	/api/v1/users/:id/block	Admin
+🟢 المرحلة 3 — Shops (قلب المشروع ❤️)
+تبدأ بـ:
+modules/shops
+
+الترتيب:
+
+shop.model.ts
+
+shop.types.ts
+
+shop.validation.ts
+
+shop.service.ts
+
+shop.controller.ts
+
+✅ APIs
+Method	Endpoint	مين
+POST	/api/v1/shops	ShopOwner
+GET	/api/v1/shops	Public
+GET	/api/v1/shops/:id	Public
+PATCH	/api/v1/shops/:id	Owner
+DELETE	/api/v1/shops/:id	Admin
+
+بعد كده المشروع بدأ يبان فعليًا.
+
+🔵 المرحلة 4 — Products & Categories
+تبدأ بـ:
+modules/categories
+modules/products
+
+APIs
+Categories
+POST   /api/v1/categories
+GET    /api/v1/categories
+
+Products
+POST   /api/v1/products
+GET    /api/v1/products
+GET    /api/v1/products/:id
+PATCH  /api/v1/products/:id
+DELETE /api/v1/products/:id
+
+🟣 المرحلة 5 — Cart & Orders
+Cart APIs
+POST   /api/v1/cart
+GET    /api/v1/cart
+PATCH  /api/v1/cart/:itemId
+DELETE /api/v1/cart/:itemId
+
+Orders APIs
+POST   /api/v1/orders
+GET    /api/v1/orders/me
+GET    /api/v1/orders/:id
+PATCH  /api/v1/orders/:id/status
+
+🟤 المرحلة 6 — Jobs & Applications
+Jobs
+POST /api/v1/jobs
+GET  /api/v1/jobs
+
+Applications
+POST /api/v1/applications
+GET  /api/v1/applications/job/:jobId
+PATCH /api/v1/applications/:id/status
+
+⚫ المرحلة 7 — Reviews, Wishlist, Coupons
+
+تتعمل واحدة واحدة بعد الـ core.
+
+🧩 المرحلة الأخيرة — Dashboards & Notifications
+
+آخر حاجة لأنهم Aggregations.
+
+🏁 الخلاصة السريعة
+لو هتبدأ دلوقتي حالًا:
+
+1️⃣ config + app.ts + server.ts
+2️⃣ modules/auth
+3️⃣ modules/users
+4️⃣ modules/shops
+
+متحاولش تعمل Products قبل Shops ❌
