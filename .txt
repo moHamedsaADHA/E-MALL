@@ -81,26 +81,6 @@ src
 │   │   ├── review.controller.ts
 │   │   ├── review.service.ts
 │   │   └── review.validation.ts
-│   │
-│   ├── jobs
-│   │   ├── job.model.ts
-│   │   ├── job.controller.ts
-│   │   ├── job.service.ts
-│   │   ├── job.validation.ts
-│   │   └── job.types.ts
-│   │
-│   ├── applications
-│   │   ├── application.model.ts
-│   │   ├── application.controller.ts
-│   │   ├── application.service.ts
-│   │   └── application.validation.ts
-│   │
-│   ├── coupons
-│   │   ├── coupon.model.ts              # Global or Shop-specific
-│   │   ├── coupon.controller.ts
-│   │   ├── coupon.service.ts
-│   │   └── coupon.validation.ts
-│   │
 │   ├── wishlist
 │   │   ├── wishlist.model.ts
 │   │   ├── wishlist.controller.ts
@@ -186,22 +166,15 @@ config/
 تتأكد السيرفر بيشتغل
 
 ملفات:
-
 server.ts
-
 app.ts
-
 الهدف:
 GET /health ترجع 200 OK
-
 🟠 المرحلة 1 — Auth (أهم فولدر)
 تبدأ بـ:
 modules/auth
-
 ليه؟
-
 كل حاجة بعدها معتمدة عليه
-
 Roles, JWT, Guards
 
 الترتيب جوه auth:
